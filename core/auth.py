@@ -2,10 +2,9 @@ import re
 from datetime import datetime, timedelta
 from typing   import Any, Union
 
-from fastapi             import Depends, status, Header
+from fastapi             import Depends, status, Header, HTTPException
 from passlib.context     import CryptContext
 from sqlalchemy.orm      import Session
-from starlette.responses import JSONResponse
 import jwt
 
 from core.config  import settings
@@ -50,9 +49,9 @@ def get_logged_in_user(
     authorization: str | None = Header(default=None),
     db           : Session = Depends(get_db)
 ):
-    credentials_exception = JSONResponse(
+    credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        content="무효한 토큰",
+        detail="무효한 토큰",
         headers={"WWW-Authenticate": "Bearer"},
     )
 
@@ -62,9 +61,9 @@ def get_logged_in_user(
     try:
         payload = jwt.decode(authorization, settings.auth_secret, algorithms=JWT_ALGORITHM)
     except jwt.ExpiredSignatureError:
-        return credentials_exception
+        raise credentials_exception
     except jwt.InvalidTokenError:
-        return credentials_exception
+        raise credentials_exception
 
     user_id = payload.get("sub")
 
