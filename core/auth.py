@@ -10,7 +10,7 @@ import jwt
 
 from core.config  import settings
 from routers.deps import get_db
-from crud.user    import get_user
+from crud.user    import read_user_by_id
 
 
 pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
@@ -68,6 +68,6 @@ def get_logged_in_user(
 
     user_id = payload.get("sub")
 
-    user = get_user(user_id, db)
+    user = read_user_by_id(user_id, db)
 
     return user
