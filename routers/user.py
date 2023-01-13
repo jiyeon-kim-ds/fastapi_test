@@ -5,7 +5,7 @@ from sqlalchemy.orm    import Session
 from core.auth    import get_password_hashed, validate_password
 from crud         import user as user_crud
 from routers.deps import get_db
-from schemas.user import UserSignup, UserResult
+from schemas.user import UserSignup
 
 
 router = APIRouter()

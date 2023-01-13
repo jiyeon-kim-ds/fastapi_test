@@ -7,7 +7,3 @@ class UserBase(BaseModel):
 
 class UserSignup(UserBase):
     password: str
-
-
-class UserResult(UserBase):
-    pass
