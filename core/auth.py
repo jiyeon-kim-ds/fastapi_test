@@ -2,10 +2,14 @@ import re
 from datetime import datetime, timedelta
 from typing   import Any, Union
 
-from passlib.context import CryptContext
+from fastapi             import Depends, status, Header, HTTPException
+from passlib.context     import CryptContext
+from sqlalchemy.orm      import Session
 import jwt
 
-from core.config import settings
+from core.config  import settings
+from routers.deps import get_db
+from crud.user    import read_user_by_id
 
 
 pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
@@ -29,7 +33,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 
 def create_access_token(
     subject: Union[str, Any]
-)-> str:
+) -> str:
     expiry = datetime.utcnow() + timedelta(days=7)
     encoded = jwt.encode(
         payload={'exp': expiry,
@@ -39,3 +43,30 @@ def create_access_token(
     )
 
     return encoded
+
+
+def get_logged_in_user(
+    authorization: str | None = Header(default=None),
+    db           : Session = Depends(get_db)
+):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="무효한 토큰",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+
+    if not authorization:
+        raise credentials_exception
+
+    try:
+        payload = jwt.decode(authorization, settings.auth_secret, algorithms=JWT_ALGORITHM)
+    except jwt.ExpiredSignatureError:
+        raise credentials_exception
+    except jwt.InvalidTokenError:
+        raise credentials_exception
+
+    user_id = payload.get("sub")
+
+    user = read_user_by_id(user_id, db)
+
+    return user

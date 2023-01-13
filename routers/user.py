@@ -2,10 +2,15 @@ from fastapi           import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm    import Session
 
-from core.auth    import get_password_hashed, validate_password, verify_password, create_access_token
-from crud         import user as user_crud
-from routers.deps import get_db, Message
-from schemas      import user as user_schema
+from core.auth       import (
+    get_password_hashed,
+    validate_password,
+    verify_password,
+    create_access_token,
+)
+from crud            import user as user_crud
+from routers.deps    import get_db, Message
+from schemas         import user as user_schema
 
 
 router = APIRouter()
@@ -21,7 +26,6 @@ signin_responses = {
 }
 
 
-# TODO: email regex 추가
 @router.post("/signup", status_code=status.HTTP_201_CREATED, responses=signup_responses)
 def signup(
     signup_data: user_schema.UserSignup,

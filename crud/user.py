@@ -18,8 +18,8 @@ def create_user(
     db: Session
 ) -> User:
     user_obj = User(
-        username = signup_data.username,
-        password = signup_data.password
+        username=signup_data.username,
+        password=signup_data.password
     )
 
     db.add(user_obj)
@@ -27,3 +27,12 @@ def create_user(
     db.refresh(user_obj)
 
     return user_obj
+
+
+def read_user_by_id(
+    req_user_id: int,
+    db: Session
+) -> User:
+    user = db.query(User).filter(User.id == req_user_id)
+
+    return user.first()
