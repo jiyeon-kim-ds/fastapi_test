@@ -8,7 +8,7 @@ def read_user(
     req_username: str,
     db: Session
 ) -> User:
-    user = db.query(User.id).filter(User.username == req_username)
+    user = db.query(User).filter(User.username == req_username)
 
     return user.first()
 
