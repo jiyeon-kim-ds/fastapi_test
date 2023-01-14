@@ -1,27 +1,7 @@
-import pytest
-
-from core.auth       import get_password_hashed
-from database.models import User
 from tests.conftest  import client, TestingSessionLocal
 
 
 db = TestingSessionLocal()
-
-
-@pytest.fixture
-def create_user():
-    user_obj = User(
-        username='existing_user@email.com',
-        password=get_password_hashed('passWord123@')
-    )
-
-    db.add(user_obj)
-    db.commit()
-
-    yield
-
-    db.delete(user_obj)
-    db.commit()
 
 
 existing_user_data = {
@@ -54,7 +34,7 @@ def test_create_user_wrong_password():
     assert response.status_code == 400
 
 
-def test_create_existing_user(create_user):
+def test_create_existing_user():
     response = client.post(
         "/user/signup",
         json=existing_user_data
@@ -62,7 +42,7 @@ def test_create_existing_user(create_user):
     assert response.status_code == 409
 
 
-def test_signin_success(create_user):
+def test_signin_success():
     response = client.post(
         "/user/signin",
         json=existing_user_data
@@ -71,7 +51,7 @@ def test_signin_success(create_user):
     assert response.status_code == 200, response.text['token']
 
 
-def test_signin_fail(create_user):
+def test_signin_fail():
     existing_user_data['password'] = 'wrong_password'
 
     response = client.post(
