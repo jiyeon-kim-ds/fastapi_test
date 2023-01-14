@@ -1,10 +1,12 @@
 from fastapi.testclient import TestClient
 from sqlalchemy         import create_engine
 from sqlalchemy.orm     import sessionmaker
+import pytest
 
 from main            import app
 from routers.deps    import get_db
-from database.models import Base
+from database.models import Base, User
+from core.auth       import get_password_hashed, create_access_token
 
 
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
@@ -30,3 +32,29 @@ def override_get_db():
 app.dependency_overrides[get_db] = override_get_db
 
 client = TestClient(app)
+db = TestingSessionLocal()
+
+
+@pytest.fixture(scope='session', autouse=True)
+def create_user():
+    user_obj = User(
+        username='existing_user@email.com',
+        password=get_password_hashed('passWord123@')
+    )
+
+    db.add(user_obj)
+    db.commit()
+
+
+def get_user_token():
+    user_obj = User(
+        username='token@email.com',
+        password=get_password_hashed('passWord123@')
+    )
+
+    db.add(user_obj)
+    db.commit()
+
+    db.refresh(user_obj)
+
+    return {"Authorization": create_access_token(user_obj.id)}

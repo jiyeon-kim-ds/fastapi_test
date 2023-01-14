@@ -1,33 +1,7 @@
-import pytest
-
-from core.auth       import get_password_hashed, create_access_token
-from database.models import User
 from tests.conftest  import client, TestingSessionLocal
 
 
 db = TestingSessionLocal()
-
-
-@pytest.fixture(scope='package', autouse=True)
-def create_user():
-    user_obj = User(
-        username='existing_user@email.com',
-        password=get_password_hashed('passWord123@')
-    )
-
-    db.add(user_obj)
-    db.commit()
-
-    yield
-
-    db.delete(user_obj)
-    db.commit()
-
-
-def get_user_token():
-    user_id = db.query(User).where(User.username == "existing_user@email.com").first().id
-
-    return {"Authorization": create_access_token(user_id)}
 
 
 existing_user_data = {
