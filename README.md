@@ -14,3 +14,16 @@ This FastAPI project is for test
 3. 메모 (note)
 4. event_date (거래 발생 날짜)
 5. created_at (ledger 생성 날짜)
+
+
+### API docs
+- Swagger를 적극 활용해 따로 작성할 필요가 없고 서버만 실행 하면 쉽게 확인할 수 있어 용이하다..
+
+### 가계부 API
+- 가계부 내역 리스트
+- 가계부 내역 생성
+- 가계부 내역 수정 `PATCH /ledger/id`
+- 가계부 내역 상세 조회 `GET /ledger/id`
+- 가계부 내역 삭제 `DELETE /ledger/id`
+- 가계부 내역 복제 `POST /ledger/id`
+- 가계부 내역 공유 URL -> 토큰 확인
