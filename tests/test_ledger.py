@@ -1,6 +1,5 @@
 from datetime import datetime
 
-from database.models import Ledger
 from tests.conftest  import client, TestingSessionLocal, get_user_token
 
 
