@@ -27,7 +27,7 @@ signin_responses = {
 
 
 @router.post("/signup", status_code=status.HTTP_201_CREATED, responses=signup_responses)
-def signup(
+def post_user_signup(
     signup_data: user_schema.UserSignup,
     db         : Session = Depends(get_db)
 ):
@@ -49,7 +49,7 @@ def signup(
 
 
 @router.post("/signin", status_code=status.HTTP_200_OK, responses=signin_responses)
-def signin(
+def post_user_signin(
     signin_data: user_schema.UserSignin,
     db         : Session = Depends(get_db)
 ):
