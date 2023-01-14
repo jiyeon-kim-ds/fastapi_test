@@ -17,8 +17,8 @@ router = APIRouter()
 
 
 signup_responses = {
+    400: {"model": Message, "description": "비밀번호 조건 불만족"},
     409: {"model": Message, "description": "중복된 username"},
-    400: {"model": Message, "description": "비밀번호 조건 불만족"}
 }
 
 signin_responses = {
