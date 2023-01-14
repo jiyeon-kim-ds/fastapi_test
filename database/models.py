@@ -5,11 +5,11 @@ from sqlalchemy.sql import func
 Base = declarative_base()
 
 
-class PrimaryKey(Base):
+class PrimaryKey:
     id = Column(Integer, primary_key=True, unique=True)
 
 
-class User(PrimaryKey):
+class User(Base, PrimaryKey):
     __tablename__ = 'users'
 
     username    = Column(String(255), nullable=False, unique=True)
@@ -18,10 +18,10 @@ class User(PrimaryKey):
     ledgers     = relationship('Ledger', back_populates='author')
 
 
-class Ledger(PrimaryKey):
+class Ledger(Base, PrimaryKey):
     __tablename__ = 'ledgers'
 
-    author_id  = Column(Integer, ForeignKey('user.id', ondelete='CASCADE'))
+    author_id  = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
     author     = relationship('User', back_populates='ledgers')
     item       = Column(String(255))
     note       = Column(Text())
