@@ -59,3 +59,14 @@ def test_update_transaction():
     )
 
     assert response.status_code == 200
+
+
+def test_copy_transaction():
+    transaction = get_transaction()
+
+    response = client.post(
+        f"/ledger/transaction/{transaction.id}",
+        headers=token_header
+    )
+
+    assert response.status_code == 201

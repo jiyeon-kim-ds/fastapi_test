@@ -54,3 +54,29 @@ def patch_transaction(
     is_updated = ledger_crud.update_transaction(transaction.id, transaction_data, db)
 
     return is_updated
+
+
+@router.post("/transaction/{transaction_id}", status_code=status.HTTP_201_CREATED, responses=ledger_responses)
+def post_copied_transaction(
+    transaction_id: int,
+    user: User = Depends(get_logged_in_user),
+    db: Session = Depends(get_db)
+):
+    transaction = ledger_crud.read_transaction(transaction_id, user.id, db)
+
+    if not transaction:
+        return JSONResponse(status_code=404, content={"message": "내역 없음"})
+
+    transaction_data = {
+        "author_id" : user.id,
+        "item_name" : transaction.item_name,
+        "note"      : transaction.note,
+        "amount"    : transaction.amount,
+        "event_date": transaction.event_date
+    }
+
+    copied_transaction = ledger_schema.TransactionCreate(**transaction_data)
+
+    ledger_crud.create_transaction(copied_transaction, db)
+
+    return JSONResponse(status_code=201, content={"message": "내역 생성 성공"})
