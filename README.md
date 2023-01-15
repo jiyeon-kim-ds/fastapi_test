@@ -38,6 +38,9 @@ Ledger 객체를 반환시 이름이 서로 맞지 않는 문제가 있다.
 # 가상환경 실행 
 pip install -r requirements.txt
 uvicorn main:app
+
+# 테스트
+pytest
 ```
 
 
