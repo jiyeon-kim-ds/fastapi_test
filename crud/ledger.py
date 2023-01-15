@@ -28,7 +28,8 @@ def read_transaction_by_id(
 ) -> Ledger:
     transaction = db.query(Ledger).filter(
             Ledger.id == transaction_id,
-            Ledger.author_id == user_id
+            Ledger.author_id == user_id,
+            Ledger.is_deleted.is_(False),
     )
 
     return transaction.first()
@@ -50,6 +51,21 @@ def read_ledger(
     user_id: int,
     db     : Session
 ) -> List[Ledger]:
-    ledger = db.query(Ledger).filter(Ledger.author_id == user_id)
+    ledger = db.query(Ledger).filter(Ledger.author_id == user_id, Ledger.is_deleted.is_(False))
 
     return ledger.all()
+
+
+def delete_bulk_ledger(
+    ledger_data: ledger_schema.TransactionBulkDelete,
+    user_id    : int,
+    db         : Session
+):
+    is_deleted = db.query(Ledger).where(
+                Ledger.id.in_(ledger_data.ledger_ids),
+                Ledger.author_id == user_id
+            ).update({"is_deleted": True})
+
+    db.commit()
+
+    return is_deleted

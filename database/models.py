@@ -1,6 +1,6 @@
-from sqlalchemy     import Column, String, Integer, DateTime, ForeignKey, Text
+from sqlalchemy     import Column, String, Integer, DateTime, ForeignKey, Text, Boolean
 from sqlalchemy.orm import declarative_base, relationship
-from sqlalchemy.sql import func
+from sqlalchemy.sql import func, expression
 
 Base = declarative_base()
 
@@ -28,3 +28,4 @@ class Ledger(Base, PrimaryKey):
     amount     = Column(Integer(), nullable=False)
     event_date = Column(DateTime())  # 거래 발생 날짜
     created_at = Column(DateTime(), server_default=func.now())  # ledger 생성 날짜
+    is_deleted = Column(Boolean(), server_default=expression.false())
