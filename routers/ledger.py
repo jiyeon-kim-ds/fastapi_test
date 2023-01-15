@@ -5,11 +5,12 @@ from fastapi.responses import JSONResponse
 from fastapi.encoders  import jsonable_encoder
 from sqlalchemy.orm    import Session
 
-from core.auth       import get_logged_in_user
+from core.auth       import get_logged_in_user, create_temp_token
 from crud            import ledger as ledger_crud
 from routers.deps    import get_db, Message
 from schemas         import ledger as ledger_schema
 from database.models import User
+from core.config     import settings
 
 
 router = APIRouter()
@@ -126,3 +127,21 @@ def delete_transactions(
 
     if not is_deleted:
         return transaction_unavailable_response
+
+
+@router.post("/transaction/{transaction_id}/url", status_code=status.HTTP_200_OK, responses=ledger_responses)
+def post_copied_transaction(
+    transaction_id: int,
+    user          : User = Depends(get_logged_in_user),
+    db            : Session = Depends(get_db)
+):
+    transaction = ledger_crud.read_transaction_by_id(transaction_id, user.id, db)
+
+    if not transaction:
+        return transaction_unavailable_response
+
+    temp_token = create_temp_token(transaction_id, user.id)
+
+    short_url = f'{settings.server_url}/ledger/transaction/{transaction_id}?token={temp_token}'
+
+    return JSONResponse(status_code=200, content=short_url)
