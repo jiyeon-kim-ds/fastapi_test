@@ -7,7 +7,7 @@ This FastAPI project is for test
 - ledger는 장부란 뜻이 있기 때문에 router을 ledger로 지었지만 
 거래내역을 CRUD하는 경우 ledger란 단어는 어울리지 않는다고 생각했다.
 그래서 `/ledger/transaction/{transaction_id}`와 같이 transaction이 ledger에 속하게끔 수정했다.
-table 명의 경우 Ledger이기 때문에 논리적으론 맞지만 Ledger 각 row들은 ledger가 아닌 transaction이므로 
+table 명의 경우 Ledger이기 때문에 의미적으론 맞지만 Ledger 각 row들은 ledger가 아닌 transaction이므로 
 Ledger 객체를 반환시 이름이 서로 맞지 않는 문제가 있다.  
 
 ### 가계부에 들어갈 요소

@@ -19,7 +19,7 @@ def create_transaction(
     return transaction_obj
 
 
-def read_transaction(
+def read_transaction_by_id(
     transaction_id: int,
     user_id       : int,
     db            : Session
