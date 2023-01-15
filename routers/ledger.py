@@ -98,3 +98,13 @@ def get_transaction_detail(
         return transaction_unavailable_response
 
     return JSONResponse(status_code=200, content=jsonable_encoder(transaction))
+
+
+@router.get("", status_code=status.HTTP_200_OK, responses=authentication_responses)
+def get_ledger(
+    user: User = Depends(get_logged_in_user),
+    db: Session = Depends(get_db)
+):
+    ledger = ledger_crud.read_ledger(user.id, db)
+
+    return JSONResponse(status_code=200, content=jsonable_encoder(ledger))

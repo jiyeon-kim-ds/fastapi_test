@@ -81,3 +81,13 @@ def test_read_transaction():
     )
 
     assert response.status_code == 200
+
+
+def test_read_ledger():
+    response = client.get(
+        f"/ledger",
+        headers=token_header
+    )
+
+    assert response.status_code == 200
+    

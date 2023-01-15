@@ -1,3 +1,5 @@
+from typing import List
+
 from sqlalchemy.orm import Session
 
 from database.models import Ledger
@@ -42,3 +44,12 @@ def update_transaction(
     db.commit()
 
     return is_updated
+
+
+def read_ledger(
+    user_id: int,
+    db     : Session
+) -> List[Ledger]:
+    ledger = db.query(Ledger).filter(Ledger.author_id == user_id)
+
+    return ledger.all()
