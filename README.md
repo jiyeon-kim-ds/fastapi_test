@@ -1,5 +1,14 @@
-# fastapi_test
-This FastAPI project is for test
+### 구현 내역
+1. email regex
+2. O
+3. 
+    1. O
+    2. O
+    3. O
+    4. order by 추가
+    5. O
+    6. O
+    7. O
 
 
 ### 고민한 부분들
