@@ -1,6 +1,8 @@
 import re
 from datetime import datetime, timedelta
 from typing   import Any, Union
+from random   import choice
+from string   import ascii_letters
 
 from fastapi         import Depends, status, Header, HTTPException
 from passlib.context import CryptContext
@@ -73,3 +75,20 @@ def get_logged_in_user(
     user = read_user_by_id(user_id, db)
 
     return user
+
+
+def create_temp_token(
+    transaction_id: int,
+    user_id       : int
+):
+    temp_token = ''.join(choice(ascii_letters) for i in range(16))
+
+    r = load_redis(settings.temp_token_db)
+    r.setex(temp_token, timedelta(minutes=30), value=user_id)
+
+    return temp_token
+
+
+
+
+def get_temp_user():
