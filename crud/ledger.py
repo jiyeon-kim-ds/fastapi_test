@@ -1,5 +1,7 @@
-from typing import List
+from typing   import List
+from datetime import datetime, timedelta
 
+from sqlalchemy     import func
 from sqlalchemy.orm import Session
 
 from database.models import Ledger
@@ -69,3 +71,20 @@ def delete_bulk_ledger(
     db.commit()
 
     return is_deleted
+
+
+def read_total_amount(
+    user_id   : int,
+    db        : Session,
+    start_date: datetime = datetime.strptime("1990-01-01", "%Y-%m-%d"),
+    end_date  : datetime = datetime.today() + timedelta(days=1),
+) -> Ledger:
+    total_amount = db.query(Ledger).with_entities(
+        func.sum(Ledger.amount).label("total_amount")
+    ).filter(
+        Ledger.author_id == user_id,
+        Ledger.is_deleted.is_(False),
+        Ledger.event_date.between(start_date, end_date)
+    )
+
+    return total_amount.first()
