@@ -1,4 +1,6 @@
-from fastapi           import APIRouter, Depends, status
+from datetime import timedelta
+
+from fastapi           import APIRouter, Depends, status, Header
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm    import Session
 
@@ -7,10 +9,14 @@ from core.auth       import (
     validate_password,
     verify_password,
     create_access_token,
+    get_logged_in_user
 )
 from crud            import user as user_crud
 from routers.deps    import get_db, Message
 from schemas         import user as user_schema
+from core.config     import load_redis
+from database.models import User
+from routers.ledger  import authentication_responses
 
 
 router = APIRouter()
@@ -59,3 +65,13 @@ def post_user_signin(
         return JSONResponse(status_code=400, content={"message": "사용자 정보 불일치"})
 
     return {'token': create_access_token(user.id)}
+
+
+@router.post("/signout", status_code=204, responses=authentication_responses)
+def post_user_signout(
+    authorization: str | None = Header(default=None),
+    user         : User = Depends(get_logged_in_user),
+):
+    r = load_redis()
+
+    r.setex(authorization, timedelta(days=7), value=user.id)
