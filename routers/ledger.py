@@ -106,8 +106,14 @@ def get_ledger(
     db  : Session = Depends(get_db)
 ):
     ledger = ledger_crud.read_ledger(user.id, db)
+    total_amount = ledger_crud.read_total_amount(user.id, db).total_amount
 
-    return JSONResponse(status_code=200, content=jsonable_encoder(ledger))
+    result = {
+        "total_amount": int(total_amount),
+        "ledger"      : jsonable_encoder(ledger)
+    }
+
+    return JSONResponse(status_code=200, content=result)
 
 
 @router.patch("/transaction", status_code=status.HTTP_204_NO_CONTENT, responses=ledger_responses)
