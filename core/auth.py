@@ -2,14 +2,15 @@ import re
 from datetime import datetime, timedelta
 from typing   import Any, Union
 
-from fastapi             import Depends, status, Header, HTTPException
-from passlib.context     import CryptContext
-from sqlalchemy.orm      import Session
+from fastapi         import Depends, status, Header, HTTPException
+from passlib.context import CryptContext
+from sqlalchemy.orm  import Session
 import jwt
 
 from core.config  import settings
 from routers.deps import get_db
 from crud.user    import read_user_by_id
+from core.config  import load_redis
 
 
 pwd_context = CryptContext(schemes=["sha256_crypt"], deprecated="auto")
@@ -49,13 +50,15 @@ def get_logged_in_user(
     authorization: str | None = Header(default=None),
     db           : Session = Depends(get_db)
 ):
+    r = load_redis()
+
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="무효한 토큰",
         headers={"WWW-Authenticate": "Bearer"},
     )
 
-    if not authorization:
+    if not authorization or r.exists(authorization):
         raise credentials_exception
 
     try:
