@@ -53,7 +53,9 @@ def read_ledger(
     user_id: int,
     db     : Session
 ) -> List[Ledger]:
-    ledger = db.query(Ledger).filter(Ledger.author_id == user_id, Ledger.is_deleted.is_(False))
+    ledger = db.query(Ledger).filter(
+        Ledger.author_id == user_id, Ledger.is_deleted.is_(False)
+    ).order_by(Ledger.event_date.desc)
 
     return ledger.all()
 

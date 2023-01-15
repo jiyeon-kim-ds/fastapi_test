@@ -9,7 +9,8 @@ from core.auth       import (
     validate_password,
     verify_password,
     create_access_token,
-    get_logged_in_user
+    get_logged_in_user,
+    validate_email
 )
 from crud            import user as user_crud
 from routers.deps    import get_db, Message
@@ -44,8 +45,8 @@ def post_user_signup(
 
     password = signup_data.password
 
-    if not validate_password(password):
-        return JSONResponse(status_code=400, content={"message": "비밀번호 조건 불만족"})
+    if not validate_password(password) or not validate_email(signup_data.username):
+        return JSONResponse(status_code=400, content={"message": "이메일 및 비밀번호 조건 불만족"})
 
     signup_data.password = get_password_hashed(password)
 
