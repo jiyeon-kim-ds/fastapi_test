@@ -39,3 +39,9 @@ Ledger 객체를 반환시 이름이 서로 맞지 않는 문제가 있다.
 pip install -r requirements.txt
 uvicorn main:app
 ```
+
+
+### 시스템 요구사항
+- Python 3.10.9
+- MySQL  5.7.40
+- Redis  7.0.7
