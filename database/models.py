@@ -23,7 +23,7 @@ class Ledger(Base, PrimaryKey):
 
     author_id  = Column(Integer, ForeignKey('users.id', ondelete='CASCADE'))
     author     = relationship('User', back_populates='ledgers')
-    item       = Column(String(255))
+    item_name  = Column(String(255))
     note       = Column(Text())
     amount     = Column(Integer(), nullable=False)
     event_date = Column(DateTime())  # 거래 발생 날짜

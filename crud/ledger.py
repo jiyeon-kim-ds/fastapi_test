@@ -17,3 +17,28 @@ def create_transaction(
     db.refresh(transaction_obj)
 
     return transaction_obj
+
+
+def read_transaction(
+    transaction_id: int,
+    user_id       : int,
+    db            : Session
+) -> Ledger:
+    transaction = db.query(Ledger).filter(
+            Ledger.id == transaction_id,
+            Ledger.author_id == user_id
+    )
+
+    return transaction.first()
+
+
+def update_transaction(
+    transaction_id: int,
+    req_data      : ledger_schema.TransactionUpdate,
+    db            : Session
+) -> Ledger:
+    is_updated = db.query(Ledger).filter(Ledger.id == transaction_id).update(req_data.dict(exclude_unset=True))
+
+    db.commit()
+
+    return is_updated
