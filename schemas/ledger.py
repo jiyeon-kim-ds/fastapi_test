@@ -1,4 +1,4 @@
-from typing   import Optional, Union
+from typing   import Optional, Union, List
 from datetime import datetime
 
 from pydantic import BaseModel
@@ -18,3 +18,7 @@ class TransactionUpdate(BaseModel):
     note      : Optional[str]
     amount    : Optional[int]
     event_date: Union[str, datetime]
+
+
+class TransactionBulkDelete(BaseModel):
+    ledger_ids: List[int]

@@ -85,9 +85,22 @@ def test_read_transaction():
 
 def test_read_ledger():
     response = client.get(
-        f"/ledger",
+        "/ledger",
         headers=token_header
     )
 
     assert response.status_code == 200
-    
+
+
+def test_delete_ledger():
+    transaction = get_transaction()
+
+    ledger_data = {"ledger_ids": [transaction.id, 10000]}
+
+    response = client.patch(
+        "/ledger/transaction",
+        json=ledger_data,
+        headers=token_header
+    )
+
+    assert response.status_code == 204

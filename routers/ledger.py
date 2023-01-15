@@ -32,7 +32,7 @@ transaction_unavailable_response = JSONResponse(status_code=404, content={"messa
 def post_transaction(
     transaction_data: ledger_schema.TransactionCreate,
     user            : User = Depends(get_logged_in_user),
-    db               : Session = Depends(get_db)
+    db              : Session = Depends(get_db)
 ):
     transaction_data.author_id = user.id
     transaction_data.event_date = datetime.strptime(transaction_data.event_date, '%Y-%m-%d %H:%M:%S.%f')
@@ -63,8 +63,8 @@ def patch_transaction(
 @router.post("/transaction/{transaction_id}", status_code=status.HTTP_201_CREATED, responses=ledger_responses)
 def post_copied_transaction(
     transaction_id: int,
-    user: User = Depends(get_logged_in_user),
-    db: Session = Depends(get_db)
+    user          : User = Depends(get_logged_in_user),
+    db            : Session = Depends(get_db)
 ):
     transaction = ledger_crud.read_transaction_by_id(transaction_id, user.id, db)
 
@@ -89,8 +89,8 @@ def post_copied_transaction(
 @router.get("/transaction/{transaction_id}", status_code=status.HTTP_200_OK, responses=ledger_responses)
 def get_transaction_detail(
     transaction_id: int,
-    user: User = Depends(get_logged_in_user),
-    db: Session = Depends(get_db)
+    user          : User = Depends(get_logged_in_user),
+    db            : Session = Depends(get_db)
 ):
     transaction = ledger_crud.read_transaction_by_id(transaction_id, user.id, db)
 
@@ -103,8 +103,20 @@ def get_transaction_detail(
 @router.get("", status_code=status.HTTP_200_OK, responses=authentication_responses)
 def get_ledger(
     user: User = Depends(get_logged_in_user),
-    db: Session = Depends(get_db)
+    db  : Session = Depends(get_db)
 ):
     ledger = ledger_crud.read_ledger(user.id, db)
 
     return JSONResponse(status_code=200, content=jsonable_encoder(ledger))
+
+
+@router.patch("/transaction", status_code=status.HTTP_204_NO_CONTENT, responses=ledger_responses)
+def delete_transactions(
+    ledger_data: ledger_schema.TransactionBulkDelete,
+    user       : User = Depends(get_logged_in_user),
+    db         : Session = Depends(get_db)
+):
+    is_deleted = ledger_crud.delete_bulk_ledger(ledger_data, user.id, db)
+
+    if not is_deleted:
+        return transaction_unavailable_response
