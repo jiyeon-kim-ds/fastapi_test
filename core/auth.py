@@ -35,6 +35,12 @@ def validate_password(password: str) -> bool:
     return False
 
 
+def validate_email(email: str) -> bool:
+    if re.fullmatch(r"^[a-zA-Z0-9.]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9.]+$", email):
+        return True
+    return False
+
+
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return pwd_context.verify(plain_password, hashed_password)
 
