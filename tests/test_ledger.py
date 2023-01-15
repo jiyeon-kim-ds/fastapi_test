@@ -104,3 +104,14 @@ def test_delete_ledger():
     )
 
     assert response.status_code == 204
+
+
+def test_share_transaction(create_transaction):
+    transaction = get_transaction()
+
+    response = client.post(
+        f"/ledger/transaction/{transaction.id}/url",
+        headers=token_header
+    )
+
+    assert response.status_code == 200

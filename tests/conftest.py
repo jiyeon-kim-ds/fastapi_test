@@ -69,6 +69,9 @@ def get_user_by_id():
 def get_transaction():
     user = get_user_by_id()
 
-    ledger = db.query(Ledger.id).filter(Ledger.author_id == user.id).first()
+    ledger = db.query(Ledger.id).filter(
+        Ledger.author_id == user.id,
+        Ledger.is_deleted.is_(False)
+    ).first()
 
     return ledger

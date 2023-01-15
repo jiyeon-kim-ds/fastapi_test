@@ -1,16 +1,18 @@
-from datetime import datetime
+from datetime import datetime, timedelta
+from random   import choice
+from string   import ascii_letters
 
 from fastapi           import APIRouter, Depends, status
 from fastapi.responses import JSONResponse
 from fastapi.encoders  import jsonable_encoder
 from sqlalchemy.orm    import Session
 
-from core.auth       import get_logged_in_user, create_temp_token
+from core.auth       import get_logged_in_user
 from crud            import ledger as ledger_crud
 from routers.deps    import get_db, Message
 from schemas         import ledger as ledger_schema
 from database.models import User
-from core.config     import settings
+from core.config     import settings, load_redis
 
 
 router = APIRouter()
@@ -132,7 +134,7 @@ def delete_transactions(
 @router.post("/transaction/{transaction_id}/url", status_code=status.HTTP_200_OK, responses=ledger_responses)
 def post_copied_transaction(
     transaction_id: int,
-    user          : User = Depends(get_logged_in_user),
+    user          : User    = Depends(get_logged_in_user),
     db            : Session = Depends(get_db)
 ):
     transaction = ledger_crud.read_transaction_by_id(transaction_id, user.id, db)
@@ -140,7 +142,16 @@ def post_copied_transaction(
     if not transaction:
         return transaction_unavailable_response
 
-    temp_token = create_temp_token(transaction_id, user.id)
+    temp_token = ''.join(choice(ascii_letters) for i in range(16))
+
+    ids_dict = {
+        "user_id": user.id,
+        "transaction_id": transaction_id
+    }
+
+    r = load_redis(settings.temp_token_db)
+    r.hmset(temp_token, ids_dict)
+    r.expire(temp_token, timedelta(minutes=30))
 
     short_url = f'{settings.server_url}/ledger/transaction/{transaction_id}?token={temp_token}'
 
