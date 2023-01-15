@@ -16,6 +16,7 @@ class Settings(BaseSettings):
     redis_host    : str = os.environ.get("REDIS_HOST")
     redis_port    : int = os.environ.get("REDIS_PORT")
     temp_token_db : int = os.environ.get("REDIS_TEMP_TOKEN_DB")
+    server_url    : str = os.environ.get("SERVER_URL")
 
 
 settings = Settings()
