@@ -1,11 +1,11 @@
 ### 구현 내역
-1. email regex
+1. O
 2. O
 3. 
     1. O
     2. O
     3. O
-    4. order by 추가
+    4. O
     5. O
     6. O
     7. O
@@ -30,14 +30,12 @@ Ledger 객체를 반환시 이름이 서로 맞지 않는 문제가 있다.
 
 
 ### API docs
-- Swagger를 적극 활용해 따로 작성할 필요가 없고 서버만 실행 하면 쉽게 확인할 수 있어 용이하다..
+- Swagger를 적극 활용해 따로 작성할 필요가 없고 서버만 실행 하면 쉽게 확인할 수 있어 용이하다.
 
 
-### 가계부 API
-- 가계부 내역 리스트
-- 가계부 내역 생성
-- 가계부 내역 수정 `PATCH /ledger/id`
-- 가계부 내역 상세 조회 `GET /ledger/id`
-- 가계부 내역 삭제 `DELETE /ledger/id`
-- 가계부 내역 복제 `POST /ledger/id`
-- 가계부 내역 공유 URL -> 토큰 확인
+### 서버 실행 방법
+```shell
+# 가상환경 실행 
+pip install -r requirements.txt
+uvicorn main:app
+```
