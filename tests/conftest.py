@@ -5,7 +5,7 @@ import pytest
 
 from main            import app
 from routers.deps    import get_db
-from database.models import Base, User
+from database.models import Base, User, Ledger
 from core.auth       import get_password_hashed, create_access_token
 
 
@@ -58,3 +58,17 @@ def get_user_token():
     db.refresh(user_obj)
 
     return {"Authorization": create_access_token(user_obj.id)}
+
+
+def get_user_by_id():
+    user = db.query(User).filter(User.username == "token@email.com").first()
+
+    return user
+
+
+def get_transaction():
+    user = get_user_by_id()
+
+    ledger = db.query(Ledger.id).filter(Ledger.author_id == user.id).first()
+
+    return ledger
