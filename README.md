@@ -31,6 +31,7 @@ Ledger 객체를 반환시 이름이 서로 맞지 않는 문제가 있다.
 
 ### API docs
 - Swagger를 적극 활용해 따로 작성할 필요가 없고 서버만 실행 하면 쉽게 확인할 수 있어 용이하다.
+- [API docs](https://htmlpreview.github.io/?https://github.com/jiyeon-kim-ds/fastapi_test/blob/main/swagger.html)
 
 
 ### 서버 실행 방법
